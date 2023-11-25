@@ -6,6 +6,13 @@ def COLOR_MAP = [
 
 pipeline{
     agent any
+    tools{
+        jdk 'jdk17'
+        nodejs 'node16'
+    }
+    environment {
+        SCANNER_HOME=tool 'sonar-scanner'
+    }
     parameters {
         choice(name: 'action', choices: 'create\ndelete', description: 'Select create or destroy.')
     }
@@ -17,7 +24,28 @@ pipeline{
         }
         stage('checkout from Git'){
             steps{
-                checkoutGit('https://github.com/prasad440/Youtube-clone-app.git', 'main')
+                checkoutGit('https://github.com/Aj7Ay/Youtube-clone-app.git', 'main')
+            }
+        }
+        stage('sonarqube Analysis'){
+        when { expression { params.action == 'create'}}    
+            steps{
+                sonarqubeAnalysis()
+            }
+        }
+        stage('sonarqube QualitGate'){
+        when { expression { params.action == 'create'}}    
+            steps{
+                script{
+                    def credentialsId = 'Sonar-token'
+                    qualityGate(credentialsId)
+                }
+            }
+        }
+        stage('Npm'){
+        when { expression { params.action == 'create'}}    
+            steps{
+                npmInstall()
             }
         }
      }
