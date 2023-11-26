@@ -26,7 +26,7 @@ pipeline{
         }
         stage('checkout from Git'){
             steps{
-                checkoutGit('https://github.com/Aj7Ay/Youtube-clone-app.git', 'main')
+                checkoutGit('https://github.com/prasad440/Youtube-clone-app.git', 'main')
             }
         }
         stage('sonarqube Analysis'){
@@ -57,13 +57,7 @@ pipeline{
                 trivyFs()
             }
         }
-        stage('OWASP FS SCAN') {
-        when { expression { params.action == 'create'}}
-            steps {
-                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-            }
-        }
+        
         stage('Docker Build'){
         when { expression { params.action == 'create'}}    
             steps{
