@@ -55,8 +55,7 @@ pipeline{
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
-        stage('Trivy file scan'){
-        when { expression { params.action == 'create'}}    
+        stage('Trivy file scan'){   
             steps{
                 trivyFs()
             }
